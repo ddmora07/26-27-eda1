@@ -1,3 +1,5 @@
+package entregas.moraDaniel;
+
 public class Persona {
 
     public static final int SIN_PRIORIDAD = 0;
