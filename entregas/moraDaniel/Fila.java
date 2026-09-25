@@ -1,57 +1,82 @@
+
 public class Fila {
- 
-    private static final int CAPACIDAD_MAXIMA_DEL_ARRAY = 200;
- 
-    private final Persona[] personasEnFila = new Persona[CAPACIDAD_MAXIMA_DEL_ARRAY];
+
+    private Nodo primerNodo;
     private int cantidadDePersonasEnFila = 0;
- 
+
     public int getCantidadDePersonasEnFila() {
         return cantidadDePersonasEnFila;
     }
- 
+
     public boolean estaVacia() {
         return cantidadDePersonasEnFila == 0;
     }
- 
+
     public Persona getPersonaEnPosicion(int posicion) {
-        return personasEnFila[posicion];
+        Nodo nodoEnEsaPosicion = obtenerNodoEnPosicion(posicion);
+        return nodoEnEsaPosicion.getPersona();
     }
- 
-    
-    public void insertarEnPosicion(int posicionDondeInsertar, Persona personaAInsertar) {
-        for (int indiceDeDesplazamiento = cantidadDePersonasEnFila;
-             indiceDeDesplazamiento > posicionDondeInsertar;
-             indiceDeDesplazamiento--) {
-            personasEnFila[indiceDeDesplazamiento] = personasEnFila[indiceDeDesplazamiento - 1];
+
+
+    private Nodo obtenerNodoEnPosicion(int posicion) {
+        Nodo nodoActual = primerNodo;
+        for (int cantidadDeAvances = 0; cantidadDeAvances < posicion; cantidadDeAvances++) {
+            nodoActual = nodoActual.getSiguienteNodo();
         }
-        personasEnFila[posicionDondeInsertar] = personaAInsertar;
+        return nodoActual;
+    }
+
+    public void insertarEnPosicion(int posicionDondeInsertar, Persona personaAInsertar) {
+        Nodo nodoNuevo = new Nodo(personaAInsertar);
+
+        if (posicionDondeInsertar == 0) {
+            nodoNuevo.setSiguienteNodo(primerNodo);
+            primerNodo = nodoNuevo;
+        } else {
+            Nodo nodoAnterior = obtenerNodoEnPosicion(posicionDondeInsertar - 1);
+            nodoNuevo.setSiguienteNodo(nodoAnterior.getSiguienteNodo());
+            nodoAnterior.setSiguienteNodo(nodoNuevo);
+        }
+
         cantidadDePersonasEnFila++;
     }
- 
+
+
     public void insertarAlFinal(Persona personaAInsertar) {
         insertarEnPosicion(cantidadDePersonasEnFila, personaAInsertar);
     }
- 
-  
-    public Persona eliminarEnPosicion(int posicionAEliminar) {
-        Persona personaEliminada = personasEnFila[posicionAEliminar];
-        for (int indiceDeDesplazamiento = posicionAEliminar;
-             indiceDeDesplazamiento < cantidadDePersonasEnFila - 1;
-             indiceDeDesplazamiento++) {
-            personasEnFila[indiceDeDesplazamiento] = personasEnFila[indiceDeDesplazamiento + 1];
-        }
-        personasEnFila[cantidadDePersonasEnFila - 1] = null;
-        cantidadDePersonasEnFila--;
-        return personaEliminada;
-    }
- 
+
    
-    public int posicionTrasUltimoPreferente() {
-        for (int indiceRecorrido = cantidadDePersonasEnFila - 1; indiceRecorrido >= 0; indiceRecorrido--) {
-            if (personasEnFila[indiceRecorrido].tienePrioridadPreferente()) {
-                return indiceRecorrido + 1;
-            }
+    public Persona eliminarEnPosicion(int posicionAEliminar) {
+        Nodo nodoAEliminar;
+
+        if (posicionAEliminar == 0) {
+            nodoAEliminar = primerNodo;
+            primerNodo = primerNodo.getSiguienteNodo();
+        } else {
+            Nodo nodoAnterior = obtenerNodoEnPosicion(posicionAEliminar - 1);
+            nodoAEliminar = nodoAnterior.getSiguienteNodo();
+            nodoAnterior.setSiguienteNodo(nodoAEliminar.getSiguienteNodo());
         }
-        return 0;
+
+        cantidadDePersonasEnFila--;
+        return nodoAEliminar.getPersona();
+    }
+
+
+    public int posicionTrasUltimoPreferente() {
+        Nodo nodoActual = primerNodo;
+        int posicionActual = 0;
+        int posicionTrasUltimoPreferenteEncontrado = 0;
+
+        while (nodoActual != null) {
+            if (nodoActual.getPersona().tienePrioridadPreferente()) {
+                posicionTrasUltimoPreferenteEncontrado = posicionActual + 1;
+            }
+            nodoActual = nodoActual.getSiguienteNodo();
+            posicionActual++;
+        }
+
+        return posicionTrasUltimoPreferenteEncontrado;
     }
 }
