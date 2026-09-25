@@ -1,7 +1,7 @@
 import java.util.Random;
 public class Simulador {
 
-    
+
     private static final double PROBABILIDAD_DE_LLEGADA = 0.6;
     private static final double PROBABILIDAD_DE_APERTURA_DE_CAJA = 0.4;
     private static final int MINUTO_DE_INICIO_DE_REGLAS_EXTENDIDAS = 20;
@@ -12,7 +12,7 @@ public class Simulador {
     private static final int UMBRAL_DE_PERSONAS_PARA_ANUNCIO = 25;
     private static final int INTERVALO_EN_MINUTOS_PARA_ANUNCIO = 15;
 
- 
+   
     private static final double PROBABILIDAD_DE_LLEGADA_PREFERENTE = 0.10;
     private static final double PROBABILIDAD_DE_COLARSE = 0.08;
     private static final double PROBABILIDAD_DE_ENTREGA_DE_COMPRAS = 0.04;
@@ -27,12 +27,12 @@ public class Simulador {
     public void simular(int minutosTotales, boolean reglasExtendidasHabilitadas) {
         for (int minutoActual = 1; minutoActual <= minutosTotales; minutoActual++) {
 
-           
+         
             if (generadorAleatorio.nextDouble() < PROBABILIDAD_DE_LLEGADA) {
                 intentarIncorporarAlFinal(minutoActual);
             }
 
-       
+        
             if (generadorAleatorio.nextDouble() < PROBABILIDAD_DE_APERTURA_DE_CAJA && !fila.estaVacia()) {
                 fila.eliminarEnPosicion(0);
                 cantidadDePersonasAtendidas++;
@@ -57,13 +57,13 @@ public class Simulador {
                 }
             }
 
-            
+         
             if (minutoActual % INTERVALO_EN_MINUTOS_PARA_ANUNCIO == 0
                     && fila.getCantidadDePersonasEnFila() > UMBRAL_DE_PERSONAS_PARA_ANUNCIO) {
                 System.out.println("[minuto " + minutoActual + "] \"Pasen por esta caja en orden de fila\"");
             }
 
-          
+
             System.out.println("minuto " + minutoActual + " -> longitud fila: "
                     + fila.getCantidadDePersonasEnFila() + " m");
         }
@@ -74,8 +74,6 @@ public class Simulador {
         System.out.println("Personas en fila al cierre: " + fila.getCantidadDePersonasEnFila());
         System.out.println("Personas que desistieron:   " + cantidadDePersonasQueDesistieron);
     }
-
-
     private boolean laPersonaDesisteAntesDeEntrar() {
         return fila.getCantidadDePersonasEnFila() >= MAXIMO_DE_POSICIONES_SEGUN_POLITICA
                 && generadorAleatorio.nextDouble() < PROBABILIDAD_DE_DESISTIR_SI_LA_FILA_ESTA_LLENA;
